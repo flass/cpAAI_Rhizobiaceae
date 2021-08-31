@@ -202,7 +202,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 
 		for fin in lfinhandles:
 			fin.close()
-			if verbose: sys.stdout.write("\n")
+		if verbose: sys.stdout.write("\n")
 
 	if cleanaft:
 		print("cleaning: removing temporary files from this run")
