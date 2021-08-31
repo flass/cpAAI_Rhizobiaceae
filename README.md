@@ -18,8 +18,8 @@ Nemanja Kuzmanović, Camilla Fagorzi, Alessio Mengoni, Florent Lassalle, George 
 	- phangorn
 
 ## Description
-The `data` folder contains reference marker protein sequence sets and their corresponding alignments for 170 non-recombining core protein markers conserved among a set of 97 Rhizobiaeceae genomes, including all available genoems of type strains of species described in the *Rhizobiaceae* family.
-The script `genome2cpAAI.py` in the `pipeline` folder can be used to obtain honolous sequence to the reference marker set described above, or to any analogous dataset, for instance a core-proteome dataset defined for another prokaryotic taxon.
+The `data` folder contains reference marker protein sequence sets and their corresponding alignments for 170 non-recombining core protein markers conserved among a set of 97 *Rhizobiaceae* genomes, including all available genomes of type strains of species described in the *Rhizobiaceae* family (as of April 2021).  
+The script `genome2cpAAI.py` in the `pipeline` folder can be used to obtain homolous sequence to the reference marker set described above, or to any analogous dataset, for instance a core-proteome dataset defined for another prokaryotic taxon.
 
 ## Pipeline usage
 The script `genome2cpAAI.py` takes as input a list of complete genomic nucleotide sequence (contig) files from the query organisms (option `-q`) and a list of files containing the reference marker protein sequence sets (option `-p`). Optionally, a list of files containing the alignments of the reference marker protein sequence sets can be provided (option `-A`). All sequence and alignment files should be in Fasta format.  
@@ -33,7 +33,10 @@ Here is n example of how to use the script `genome2cpAAI.py`:
 ls data/protein_sequences/*.faa > protein_sequences_list
 ls data/protein_alignments/*.aln > protein_alignments_list
 mkdir run_genome2cpAAI/ tmp/
-pipeline/genome2cpAAI.py -q testgenomelist -p protein_sequences_list -A data/protein_alignments_list -o run_genome2cpAAI --threads 8 --tmp tmp
+# run the pipeline
+genome2cpAAI.py -q testgenomelist -p protein_sequences_list \
+ -A data/protein_alignments_list -o run_genome2cpAAI \
+ --threads 8 --tmp tmp
 ```
 
 Then, the output concatenated alignment `concatenated_marker_proteins.aln` (located in the specified result folder, here `run_genome2cpAAI/`) can be used to compute a core-proteome tree using the phylogenetic program of your choice (task not included in this package) and to compute the **cpAAI values** between query and reference strains.  
