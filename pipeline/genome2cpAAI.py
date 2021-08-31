@@ -124,7 +124,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 			with open(nfblastout, 'r') as fblastout:
 				blastout = [dict(zip(blastoutfmt6stdfields, line.rstrip('\n').split('\t'))) for line in fblastout]
 			if len(blastout)>0:
-				scores = [hit['bitscore'] for hit in blastout]
+				scores = [float(hit['bitscore']) for hit in blastout]
 				maxscore = max(scores)
 				besthit = blastout[scores.index(maxscore)]
 				hitpos = [besthit[f] for f in ('saccver', 'sstart', 'send')]
