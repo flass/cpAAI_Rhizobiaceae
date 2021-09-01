@@ -22,11 +22,11 @@ The `data` folder contains reference marker protein sequence sets and their corr
 The script `genome2cpAAI.py` in the `pipeline` folder can be used to obtain homolous sequence to the reference marker set described above, or to any analogous dataset, for instance a core-proteome dataset defined for another prokaryotic taxon.
 
 ## Pipeline usage
-The script `genome2cpAAI.py` takes as input a list of complete genomic nucleotide sequence (contig) files from the query organisms (option `-q`) and a list of files containing the reference marker protein sequence sets (option `-p`). Optionally, a list of files containing the alignments of the reference marker protein sequence sets can be provided (option `-A`). All sequence and alignment files should be in Fasta format.  
-This script will locate in the input genome the loci coding for the protein homologs of the reference marker proteins using `tblastn`. It will then extract these sequences, translate them, and align them with the reference sequence set using `mafft`; if the reference alignments were provided, these are used as guide using `mafft -add` algorithm, allowing faster processing.  
+The script `genome2cpAAI.py` takes as input a list of complete genomic nucleotide sequence (contig) files from the query organisms (argument `-q`), a list of files containing the reference marker protein sequence sets (argument `-p`) and a path for the folder where the output will be written (argument `-o`). Optionally, a list of files containing the alignments of the reference marker protein sequence sets can be provided (argument `-A`). All sequence and alignment files should be in Fasta format.  
+This script will locate in the input genome the loci coding for the protein homologs of the reference marker proteins using `tblastn`. It will then extract these sequences, translate them, and align them with the reference sequence set using `mafft` (the aligner `clustalo` can be used alternatively if specified through the argument `--aligner`); if the reference alignments were provided, these are used as a alignmentguide using `mafft -add` algorithm, allowing faster processing.  
 Finally, the resulting core protein alignments are concatenated into a single file.
 
-Here is n example of how to use the script `genome2cpAAI.py`:
+Here is an example of how to use the script `genome2cpAAI.py`:
 ```sh
 # generate list of reference marker protein sequence and alignment files
 # lists of files for the 170 Rhizobiaceae core protein markers are already available in data/

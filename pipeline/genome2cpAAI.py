@@ -106,8 +106,8 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 		# make blast db
 		nfgenomedb = path.join(tmpblastdb, path.basename(nfquerygenome))
 		if not (reusetmp and path.isfile(nfgenomedb)):
-			os.symlink(nfquerygenome, nfgenomedb)
-	#		shutil.copyfile(nfquerygenome, nfgenomedb)
+#			os.symlink(nfquerygenome, nfgenomedb)
+			shutil.copyfile(nfquerygenome, nfgenomedb)
 			subprocess.run(['makeblastdb', '-dbtype', 'nucl', '-in', nfgenomedb, '-input_type', 'fasta'])
 		
 		genomeseqrecs = dict([(r.id, r) for r in SeqIO.parse(nfquerygenome, format='fasta')])
@@ -174,7 +174,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				nftmpcombseq = path.join(tmpcombseq, marker+'.faa')
 				shutil.copyfile(nfmarkprotseqs, nftmpcombseq)
 				with open(nftmpcombseq, 'a') as ftmpcombseq:
-					with open(nfoutprotseqm, 'r') as foutprotseq:
+					with open(nfoutprotseq, 'r') as foutprotseq:
 						ftmpcombseq.write(foutprotseq.read())
 				if aligner=='clustalo':
 					aligncmd = ['clustalo', '--in', nftmpcombseq, '-t', 'Protein', '--threads', str(nbthreads), '--out', nfalnout, '--infmt', 'fasta', '--outfmt', 'fasta']
