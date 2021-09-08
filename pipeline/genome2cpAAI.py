@@ -19,10 +19,11 @@ def iterOneLabel(lfinhandles, fout, currlabel):
 	for i, fin in enumerate(lfinhandles):
 		for line in fin:
 			if line.startswith('>'):
+				label = line.rstrip('\n').split()[0]
 				if i==0:
-					currlabel = line.rstrip('\n').split()[0]
+					currlabel = label
 				else:
-					if line.rstrip('\n').split()[0] != currlabel:
+					if label != currlabel:
 						raise IndexError("{}\n{}\nlabels (fasta headers) are not orderred the same in input files".format(line, currlabel))
 				break # 'for line in fin' loop
 			else:
@@ -168,7 +169,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				if aligner=='clustalo':
 					aligncmd = ['clustalo', '--in', nfoutprotseq, '--profile1', dnfmarkprotalns[marker], '-t', 'Protein', '--threads', str(nbthreads), '--out', nfalnout, '--infmt', 'fasta', '--outfmt', 'fasta']
 				elif aligner=='mafft':
-					aligncmd = ['mafft', '--quiet', '--amino', '--thread', str(nbthreads), '--add', nfoutprotseq, dnfmarkprotalns[marker]]
+					aligncmd = ['mafft', '--quiet', '--amino', '--inputorder', '--thread', str(nbthreads), '--add', nfoutprotseq, dnfmarkprotalns[marker]]
 			else:
 				print("aligning extracted protein sequences for marker {} together with input reference sequences".format(marker))
 				nftmpcombseq = path.join(tmpcombseq, marker+'.faa')
@@ -179,7 +180,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				if aligner=='clustalo':
 					aligncmd = ['clustalo', '--in', nftmpcombseq, '-t', 'Protein', '--threads', str(nbthreads), '--out', nfalnout, '--infmt', 'fasta', '--outfmt', 'fasta']
 				elif aligner=='mafft':
-					aligncmd = ['mafft', '--quiet', '--amino', '--thread', str(nbthreads), nftmpcombseq]
+					aligncmd = ['mafft', '--quiet', '--amino', '--inputorder', '--thread', str(nbthreads), nftmpcombseq]
 			if verbose: print(' '.join(aligncmd))
 			if aligner=='clustalo':
 				subprocess.run(aligncmd)
