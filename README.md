@@ -26,7 +26,9 @@ The script `genome2cpAAI.py` takes as input a list of complete genomic nucleotid
 This script will locate in the input genome the loci coding for the protein homologs of the reference marker proteins using `tblastn`. It will then extract these sequences, translate them, and align them with the reference sequence set using `mafft` (the aligner `clustalo` can be used alternatively if specified through the argument `--aligner`); if the reference alignments were provided, these are used as a alignment guide using `mafft -add` algorithm, allowing faster processing.  
 Finally, the resulting core protein alignments are concatenated into a single file.
 
-### Generic use
+### 1. Generating the concatenated protein alignment
+
+#### Generic use
 Here is an example of how to use the script `genome2cpAAI.py` on generic data (i.e. with any reference core protein set, pre-aligned or not):
 
 ```sh
@@ -50,8 +52,7 @@ genome2cpAAI.py -q testgenomelist -p my_ref_protein_sequences_list \
  -o genome2cpAAI_out --threads 8 --tmp_dir tmp
 ```
 
-
-### Use with 170 Rhizobiacae marker set
+#### Use with 170 Rhizobiacae marker set
 If you wish to estimate the cpAAI of a query Rhizobiaceae genome against our reference set of 170 marker proteins from 97 reference strains as described in [Kuzmanovic et al. (2021)](https://doi.org/10.1101/2021.08.02.454807), please use the following commands.  
 We strongly recommend using the pre-aligned reference protein files as we cannot guarantee that the cpAAI values derived from a third-party alignment will be consistent with those described in our manuscript.
 
@@ -66,6 +67,7 @@ genome2cpAAI.py -q testgenomelist -p protein_sequences_list \
  -A protein_alignments_list -o genome2cpAAI_Rhizob_out \
  --threads 8 --tmp_dir tmp
 ```
+### 2. Compute cpAAI values
 
 Then, the output concatenated alignment `concatenated_marker_proteins.aln` (located in the specified result folder, here `run_genome2cpAAI/`) can be used to compute a core-proteome tree using the phylogenetic program of your choice (task not included in this package) and to compute the **cpAAI values** between query and reference strains.  
 This can be done with the following `R` script:
@@ -81,5 +83,5 @@ rootedconcattree = read.tree(nfrootedtree)
 rcpaai = cpaai[rootedconcattree$tip.label,rootedconcattree$tip.label]
 write.table(rcpaai, "orderred_cpAAI_matrix.txt", sep='\t', col.names=NA, row.names=T)
 ```
-## Visualisation
+### 3. Visualisation
 ...
