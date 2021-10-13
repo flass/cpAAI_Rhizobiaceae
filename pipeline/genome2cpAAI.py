@@ -130,18 +130,20 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				besthit = blastout[scores.index(maxscore)]
 				hitpos = [besthit[f] for f in ('saccver', 'sstart', 'send')]
 				genomehitrec = genomeseqrecs[hitpos[0]]
-				if hitpos[1]<hitpos[2]:
-					hitbeg = int(hitpos[1]) - 1
-					hitend = int(hitpos[2])
+				hitpos1 = int(hitpos[1])
+				hitpos2 = int(hitpos[2])
+				if hitpos1<hitpos2:
+					hitbeg = hitpos1 - 1
+					hitend = hitpos2
 				else:
-					hitbeg = int(hitpos[2]) - 1
-					hitend = int(hitpos[1])
+					hitbeg = hitpos2 - 1
+					hitend = hitpos1
 				hitseqrec = genomehitrec[hitbeg:hitend]
 #				hitseqrec.id = genomeid+'_'+marker
 				hitseqrec.id = genomeid
 				hitseqrec.name += '_'+marker
 				hitseqrec.description += ' [{}..{}]'.format(hitbeg,hitend)
-				if hitpos[1]>hitpos[2]:
+				if hitpos1>hitpos2:
 					hitseqrec.seq = hitseqrec.seq.reverse_complement()
 					hitseqrec.description += ' (reverse complement)'
 				doutgeneseqrec[marker].append(hitseqrec)
