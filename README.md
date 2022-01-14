@@ -95,4 +95,4 @@ dev.off()
 ```
 ![cpaaiplot]
 
-[cpaaiplot]:https://github.com/flass/cpAAI_Rhizobiaceae/fig/cpAAI_heatmap-vs-coregenometree.svg
+[cpaaiplot]:fig/cpAAI_heatmap-vs-coregenometree.svg
