@@ -84,4 +84,12 @@ rcpaai = cpaai[rootedconcattree$tip.label,rootedconcattree$tip.label]
 write.table(rcpaai, "orderred_cpAAI_matrix.txt", sep='\t', col.names=NA, row.names=T)
 ```
 ### 3. Visualisation
-...
+
+Plotting can be done thanks to the `phylo.heatmap` function from the R package `phytools`:
+```R
+library(phytools)
+library(RColorBrewer)
+pdf(paste(nfrootedtree, "heatmap_cgANI.pdf", sep='.'), width=20, height=14)
+phylo.heatmap(rootedconcattree, cpaai, fsize=.5, colors=c(rev(brewer.pal(8, 'YlGnBu')), brewer.pal(9, 'YlOrRd')))
+dev.off()
+```
