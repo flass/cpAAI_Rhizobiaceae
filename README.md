@@ -4,8 +4,8 @@ A pipeline and reference protein sequence data for generating core-proteome alig
 ## Citation
 These software/data are in support of this paper:
 
-Nemanja Kuzmanović, Camilla Fagorzi, Alessio Mengoni, Florent Lassalle, George C diCenzo. 2021. **Taxonomy of Rhizobiaceae revisited: proposal of a new framework for genus delimitation.** *BioRxiv* 2021.08.02.454807.
-[https://doi.org/10.1101/2021.08.02.454807]
+Nemanja Kuzmanović, Camilla Fagorzi, Alessio Mengoni, Florent Lassalle, George C diCenzo. 2021. **Taxonomy of Rhizobiaceae revisited: proposal of a new framework for genus delimitation.** *Int J Syst Evol Microbiol* 72(3):005243.
+[https://doi.org/10.1099/ijsem.0.005243]
 
 ## Dependencies
 - Python 3 (recommended version >= 3.8.5), with package:
