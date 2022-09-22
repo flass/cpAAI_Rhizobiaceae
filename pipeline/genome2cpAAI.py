@@ -24,7 +24,7 @@ def iterOneLabel(lfinhandles, fout, currlabel):
 					currlabel = label
 				else:
 					if label != currlabel:
-						raise IndexError("{}\n{}\nlabels (fasta headers) are not orderred the same in input files".format(line, currlabel))
+						raise IndexError("{}\n{}\nlabels (fasta headers) are different/orderred differently from in input files".format(line, currlabel))
 				break # 'for line in fin' loop
 			else:
 				fout.write(line)
@@ -93,13 +93,25 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 	for d in [tmpdir, tmpblastdb, tmpblastout, tmpcombseq, outnuseqdir, outaaseqdir, outalndir]:
 		os.makedirs(d, exist_ok=True)
 	
-	# dict will store extracted sequence records of marker genes
+	# initiate dicts that will store extracted sequence records of marker genes/proteins
 	doutgeneseqrec = {}
 	doutprotseqrec = {}
+	# build unique list of organism names present in the reference marker gene/protein file set
+	refseqids = set([])
 	for nfmarkprotseqs in lnfmarkprotseqs:
 		marker = path.splitext(path.basename(nfmarkprotseqs))[0]
 		doutgeneseqrec[marker] = []
 		doutprotseqrec[marker] = []
+		lrefseqids = []
+		with open(nfmarkprotseqs, 'r') as fmarkprotseqs:
+			for line in fmarkprotseqs:
+				if line.startswith('>'):
+					label = line.rstrip('\n').split()[0]
+					if not label in lrefseqids:
+						lrefseqids.append(label)
+					else:
+						raise IndexError("label '{}' present more than once in reference marker protein file {}".format(label, nfmarkprotseqs))
+		refseqids |= set(lrefseqids)
 	
 	for nfquerygenome in lnfquerygenomes:
 #		qgenomeseqrecs = SeqIO.parse(nfquerygenomes, format='fasta')
@@ -113,7 +125,8 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 		
 		genomeseqrecs = dict([(r.id, r) for r in SeqIO.parse(nfquerygenome, format='fasta')])
 		
-		for nfmarkprotseqs in lnfmarkprotseqs:	
+		for nfmarkprotseqs in lnfmarkprotseqs:
+			drefseqiddups = dict([(label, 0) for label in refseqids])
 			marker = path.splitext(path.basename(nfmarkprotseqs))[0]
 			# run blast
 			nfblastout = path.join(tmpblastout, genomeid+'_vs_'+marker+'.blastout')
@@ -149,7 +162,11 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				doutgeneseqrec[marker].append(hitseqrec)
 				# translate to protein
 				protseqrec = hitseqrec.translate(table=transtable)
-				protseqrec.id = hitseqrec.id
+				if hitseqrec.id in drefseqiddups:
+					drefseqiddups[hitseqrec.id] += 1
+					protseqrec.id = hitseqrec.id+'-{}'.format(drefseqiddups[hitseqrec.id])
+				else:
+					protseqrec.id = hitseqrec.id
 				protseqrec.name = hitseqrec.name
 				protseqrec.description = 'translation of '+hitseqrec.description
 				doutprotseqrec[marker].append(protseqrec)
