@@ -16,6 +16,10 @@ Nemanja Kuzmanović, Camilla Fagorzi, Alessio Mengoni, Florent Lassalle, George 
 - MAFFT (recommended version >= v7.487) (preferred)
 - R (recommended version >= 4.0.2), with package:
 	- phangorn
+	
+The dependencies required to run the pipeline script `genome2cpAAI.py` can be satisfied by building the conda environment specified by the `environment.yml` file. 
+
+For visualisation purposes, `R` and its package `phangorn` can/should be installed spearately.
 
 ## Description
 The `data` folder contains reference marker protein sequence sets and their corresponding alignments for 170 non-recombining core protein markers conserved among a set of 97 *Rhizobiaceae* genomes, including all available genomes of type strains of species described in the *Rhizobiaceae* family (as of April 2021).  

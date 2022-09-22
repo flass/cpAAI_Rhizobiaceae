@@ -96,7 +96,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 	# initiate dicts that will store extracted sequence records of marker genes/proteins
 	doutgeneseqrec = {}
 	doutprotseqrec = {}
-	# build unique list of organism names present in the reference marker gene/protein file set
+	# and build unique list of organism names present in the reference marker gene/protein file set
 	refseqids = set([])
 	for nfmarkprotseqs in lnfmarkprotseqs:
 		marker = path.splitext(path.basename(nfmarkprotseqs))[0]
