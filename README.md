@@ -94,7 +94,7 @@ Plotting can be done thanks to the `phylo.heatmap` function from the R package `
 library(phytools)
 library(RColorBrewer)
 pdf(paste(nfrootedtree, "heatmap_cgANI.pdf", sep='.'), width=20, height=14)
-phylo.heatmap(rootedconcattree, cpaai, fsize=.5, colors=c(rev(brewer.pal(8, 'YlGnBu')), brewer.pal(9, 'YlOrRd')))
+phylo.heatmap(rootedconcattree, rcpaai, fsize=.5, colors=c(rev(brewer.pal(8, 'YlGnBu')), brewer.pal(9, 'YlOrRd')))
 dev.off()
 ```
 ![cpaaiplot]
