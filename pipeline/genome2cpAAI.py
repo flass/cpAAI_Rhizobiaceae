@@ -7,6 +7,8 @@ import shutil
 from os import path
 import getopt
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 
 blastoutfmt6stdfields = ['qaccver', 'saccver', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore']
 evalthresh = 0.00001
@@ -98,20 +100,28 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 	doutprotseqrec = {}
 	# and build unique list of organism names present in the reference marker gene/protein file set
 	refseqids = set([])
+	protmarkerlen = {}
 	for nfmarkprotseqs in lnfmarkprotseqs:
 		marker = path.splitext(path.basename(nfmarkprotseqs))[0]
 		doutgeneseqrec[marker] = []
 		doutprotseqrec[marker] = []
 		lrefseqids = []
+		seqcount = 0
+		firstprotmkarkerlen = 0
 		with open(nfmarkprotseqs, 'r') as fmarkprotseqs:
 			for line in fmarkprotseqs:
 				if line.startswith('>'):
+					seqcount += 1
 					label = line.rstrip('\n').split()[0]
 					if not label in lrefseqids:
 						lrefseqids.append(label)
 					else:
 						raise IndexError("label '{}' present more than once in reference marker protein file {}".format(label, nfmarkprotseqs))
+				else:
+					if seqcount == 1:
+						firstprotmkarkerlen += len(line.rstrip('\n'))
 		refseqids |= set(lrefseqids)
+		protmarkerlen[marker] = firstprotmkarkerlen
 	
 	for nfquerygenome in lnfquerygenomes:
 #		qgenomeseqrecs = SeqIO.parse(nfquerygenomes, format='fasta')
@@ -170,6 +180,12 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				protseqrec.name = hitseqrec.name
 				protseqrec.description = 'translation of '+hitseqrec.description
 				doutprotseqrec[marker].append(protseqrec)
+			else:
+				# no hit found for this marker; create mock undetermined-only sequence entry
+				nohitseqrec = SeqRecord(Seq("N"*protmarkerlen[marker]*3), id=genomeid, name=genomeid, description="no homolog found")
+				noprotseqrec = SeqRecord(Seq("X"*(protmarkerlen[marker])), id=genomeid, name=genomeid, description="no homolog found")
+				doutgeneseqrec[marker].append(nohitseqrec)
+				doutprotseqrec[marker].append(noprotseqrec)
 
 
 	# for each marker write combined extracted sequences from all genomes to output files
