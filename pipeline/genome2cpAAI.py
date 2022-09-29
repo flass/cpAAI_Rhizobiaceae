@@ -153,6 +153,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				besthit = blastout[scores.index(maxscore)]
 				hitpos = [besthit[f] for f in ('saccver', 'sstart', 'send')]
 				genomehitrec = genomeseqrecs[hitpos[0]]
+				if verbose: print("best hit: "+repr(genomehitrec)+"; seq. length: {}bp".format(len(genomehitrec.seq))+"; hit position: {} {}".format(hitpos[1], hitpos[2]))
 				hitpos1 = int(hitpos[1])
 				hitpos2 = int(hitpos[2])
 				if hitpos1<hitpos2:
@@ -169,21 +170,27 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 				if hitpos1>hitpos2:
 					hitseqrec.seq = hitseqrec.seq.reverse_complement()
 					hitseqrec.description += ' (reverse complement)'
+				if verbose: print("extracted gene: "+repr(hitseqrec))
 				doutgeneseqrec[marker].append(hitseqrec)
 				# translate to protein
 				protseqrec = hitseqrec.translate(table=transtable)
 				if hitseqrec.id in drefseqiddups:
 					drefseqiddups[hitseqrec.id] += 1
 					protseqrec.id = hitseqrec.id+'-{}'.format(drefseqiddups[hitseqrec.id])
+					if verbose:
+						print("changed reference protein name to {}".format(protseqrec.id))
+						print(protseqrec.seq[0:5])
 				else:
 					protseqrec.id = hitseqrec.id
 				protseqrec.name = hitseqrec.name
 				protseqrec.description = 'translation of '+hitseqrec.description
+				if verbose: print("extracted protein: "+repr(protseqrec))
 				doutprotseqrec[marker].append(protseqrec)
 			else:
 				# no hit found for this marker; create mock undetermined-only sequence entry
 				nohitseqrec = SeqRecord(Seq("N"*protmarkerlen[marker]*3), id=genomeid, name=genomeid, description="no homolog found")
 				noprotseqrec = SeqRecord(Seq("X"*(protmarkerlen[marker])), id=genomeid, name=genomeid, description="no homolog found")
+				if verbose: print("mock extracted protein: "+repr(noprotseqrec))
 				doutgeneseqrec[marker].append(nohitseqrec)
 				doutprotseqrec[marker].append(noprotseqrec)
 
@@ -247,7 +254,7 @@ def main(outdir, nflnfmarkgeneseqs=None, nflnfmarkprotseqs=None, nflnfquerygenom
 
 
 def usage():
-	s = "genome2cpAAI.py {-g/--list_marker_gene_seqs listfilepaths|-p/--list_marker_prot_seqs listfilepaths} {-q/--list_query_genomes listfilepaths|-Q/--list_query_proteomes listfilepaths} [{-a/--list_marker_gene_alns listfilepaths|-A/--list_marker_prot_alns listfilepaths}] [--threads int(default: 1)] [--tmp_dir folderpath(default: current directory)] [--cleanres] [--cleantmp] [--cleanaft] [--cleanall] [--aligner {mafft|clustalo}(default: mafft)']"
+	s = "genome2cpAAI.py {-g/--list_marker_gene_seqs listfilepaths|-p/--list_marker_prot_seqs listfilepaths} {-q/--list_query_genomes listfilepaths|-Q/--list_query_proteomes listfilepaths} [{-a/--list_marker_gene_alns listfilepaths|-A/--list_marker_prot_alns listfilepaths}] [--threads int(default: 1)] [--tmp_dir folderpath(default: current directory)] [--clean_prevres] [--clean_prevtmp] [--clean_after] [--cleanall] [--aligner {mafft|clustalo}(default: mafft)']"
 	return s
 
 if __name__=="__main__":
